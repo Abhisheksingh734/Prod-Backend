@@ -34,7 +34,7 @@ const userSchema = new mongoose.Schema(
       type: String,
     },
     watchHistory: {
-      type: mongoose.Schema.type.objecId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "Video",
     },
     password: {
@@ -48,8 +48,10 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 userSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next(); //don't change password everytime when saving the info
-  this.password = bcrypt.hash(this.password, 10); //encrypt the passwprd before saving in DB, rounds
+  //don't change password everytime when saving the info
+  if (!this.isModified("password")) return next();
+
+  this.password = await bcrypt.hash(this.password, 10); //encrypt the passwprd before saving in DB, rounds
   next();
 });
 
